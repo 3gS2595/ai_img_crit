@@ -28,8 +28,9 @@ def nextPage(url):
                 if len(str) != 0 and not ('More:' in str) and not ('jsaltz@villagevoice.com' in str):
                     print(str)
 
+    # GRABS NEXT RESULT PAGE'S URL
     for t in soup.find_all("a", class_="next page-numbers"):
-        if len(t) == 1:
+        if len(t) != 0:
             return nextPage(t.get('href'))
         else:
             return
