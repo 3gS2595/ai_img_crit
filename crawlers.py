@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 
+
 # returns URL's HTML
 def getHTML(url):
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
