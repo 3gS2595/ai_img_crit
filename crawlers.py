@@ -13,7 +13,7 @@ def getHTML(url):
 
 # Recursive method iterating through
 # VillageVoice.com articles written by Saltz
-def nextPage(url):
+def VillVoice(url):
     soup = getHTML(url)
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
 
@@ -28,13 +28,13 @@ def nextPage(url):
                 if len(str) != 0 and not ('More:' in str) and not ('jsaltz@villagevoice.com' in str):
                     print(str)
 
-    # GRABS NEXT RESULT PAGE'S URL
+    # GRABS THE NEXT RESULTS PAGE URL
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) != 0:
-            return nextPage(t.get('href'))
+            return VillVoice(t.get('href'))
         else:
             return
 
 
-entryPoint = 'https://www.villagevoice.com/author/jerrysaltz/'
-nextPage(entryPoint)
+start = 'https://www.villagevoice.com/author/jerrysaltz/'
+VillVoice(start)
