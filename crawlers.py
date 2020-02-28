@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 
 
-# returns URL's HTML
+# Returns URL's HTML
 def getHTML(url):
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     web_byte = urlopen(req).read()
@@ -13,7 +13,7 @@ def getHTML(url):
 
 # Recursive method iterating through
 # VillageVoice.com articles written by Saltz
-def VillVoice(url):
+def VillageVoice(url):
     soup = getHTML(url)
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
 
@@ -21,6 +21,7 @@ def VillVoice(url):
         for link in tag.find_all('a'):
             url = link.get('href')
             article = getHTML(url)
+            print(url)
 
             # GRABS TEXT OF A SINGLE ARTICLE
             for text in article.find_all("p"):
@@ -31,10 +32,10 @@ def VillVoice(url):
     # GRABS THE NEXT RESULTS PAGE URL
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) != 0:
-            return VillVoice(t.get('href'))
+            return VillageVoice(t.get('href'))
         else:
             return
 
 
-start = 'https://www.villagevoice.com/author/jerrysaltz/'
-VillVoice(start)
+start = "https://www.villagevoice.com/author/jerrysaltz/"
+VillageVoice(start)
