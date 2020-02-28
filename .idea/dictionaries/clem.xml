@@ -2,6 +2,9 @@
   <dictionary name="clem">
     <words>
       <w>logits</w>
+      <w>nextpage</w>
+      <w>rawhtml</w>
+      <w>saltz</w>
     </words>
   </dictionary>
 </component>

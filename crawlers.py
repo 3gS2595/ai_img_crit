@@ -1,14 +1,14 @@
-import re
-
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 
 
-def recursion(url):
+# Recursive method iterating through
+# VillageVoice.com articles written by Saltz
+def nextPage(url):
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     web_byte = urlopen(req).read()
-    rawPage = web_byte.decode('utf-8')
-    soup = BeautifulSoup(rawPage, 'html.parser')
+    rawhtml = web_byte.decode('utf-8')
+    soup = BeautifulSoup(rawhtml, 'html.parser')
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
         # FOR EACH ARTICLE ON RESULTS PAGE
         for link in tag.find_all('a'):
@@ -16,8 +16,8 @@ def recursion(url):
             url = link.get('href')
             req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             web_byte = urlopen(req).read()
-            rawPage = web_byte.decode('utf-8')
-            article = BeautifulSoup(rawPage, 'html.parser')
+            rawhtml = web_byte.decode('utf-8')
+            article = BeautifulSoup(rawhtml, 'html.parser')
 
             # GETS THE TEXT OF A SINGLE ARTICLE
             for text in article.find_all("p"):
@@ -29,11 +29,10 @@ def recursion(url):
 
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) == 1:
-            return recursion(t.get('href'))
+            return nextPage(t.get('href'))
         else:
             return
 
 
-url = 'https://www.villagevoice.com/author/jerrysaltz/'
-recursion(url)
-
+entryPoint = 'https://www.villagevoice.com/author/jerrysaltz/'
+nextPage(entryPoint)
