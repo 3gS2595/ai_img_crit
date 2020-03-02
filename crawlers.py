@@ -1,41 +1,13 @@
-from bs4 import BeautifulSoup
-from urllib.request import Request, urlopen
+from crawlers.VillageVoice import VillageVoiceCrawler
+from crawlers.ArtNet import ArtNetCrawler
 
+# found urls
+numURL = 0
+# successfully scraped
+numFIN = 0
 
-# Returns URL's HTML
-def getHTML(url):
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    web_byte = urlopen(req).read()
-    rawhtml = web_byte.decode('utf-8')
-    soup = BeautifulSoup(rawhtml, 'html.parser')
-    return soup
+start0 = "https://www.villagevoice.com/author/jerrysaltz/"
+# VillageVoiceCrawler(start0, numURL, numFIN)
 
-
-# Recursive method iterating through
-# VillageVoice.com articles written by Saltz
-def VillageVoice(url):
-    soup = getHTML(url)
-    for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
-
-        # ITERATES THROUGH ARTICLES ON RESULTS PAGE
-        for link in tag.find_all('a'):
-            url = link.get('href')
-            article = getHTML(url)
-            print(url)
-
-            # GRABS TEXT OF A SINGLE ARTICLE
-            for text in article.find_all("p"):
-                str = text.get_text()
-                if len(str) != 0 and not ('More:' in str) and not ('jsaltz@villagevoice.com' in str):
-                    print(str)
-
-    # GRABS THE NEXT RESULTS PAGE URL
-    for t in soup.find_all("a", class_="next page-numbers"):
-        if len(t) != 0:
-            return VillageVoice(t.get('href'))
-        else:
-            return
-
-
-start = "https://www.villagevoice.com/author/jerrysaltz/"
-VillageVoice(start)
+start0 = "http://www.artnet.com/magazineus/authors/saltz.asp"
+ArtNetCrawler(start0, numURL, numFIN)

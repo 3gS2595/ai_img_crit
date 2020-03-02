@@ -6,7 +6,7 @@ from collections import Counter
 from argparse import Namespace
 
 flags = Namespace(
-    train_file='salt.txt',
+    train_file='data/salt.txt',
     seq_size=32,
     batch_size=16,
     embedding_size=64,
