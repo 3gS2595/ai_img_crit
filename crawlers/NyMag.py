@@ -13,6 +13,7 @@ def getHTML(url):
 
 # finds all artnet.com Saltz articles URL
 def NyMagCrawler(url0, cnt, fin):
+    out = ""
     soup = getHTML(url0)
     for tag in soup.find_all('div', class_='container-main'):
         # ITERATES THROUGH ARTICLES ON RESULTS PAGE
@@ -23,14 +24,15 @@ def NyMagCrawler(url0, cnt, fin):
             if 'tart=' in url:
                 NyMagCrawler('https://nymag.com/author/jerry-saltz/?s' + url, cnt, fin)
             else:
-                fin = fin + NyMagExtractor('https://' + url)
-                print('fin: {} cnt: {}'.format(fin, cnt))
+                output = out + NyMagExtractor('https://' + url)
+                print("len: {} cnt: {}".format(len(output), cnt))
             # SENDS URL TO EXTRACTOR
 
+    return out
 
 # using artnet.com URL extracts article text
 def NyMagExtractor(url):
-    flag = 0
+    output = ""
     article = getHTML(url)
     for text in article.find_all('p'):
         text = text.get_text()
@@ -39,9 +41,6 @@ def NyMagExtractor(url):
                                    or 'Terms of Use' in text
                                    or 'magazine subscription' in text
                                    or 'Subscribe Now!' in text):
-            if flag == 0:
-                flag = 1
-
             # EXTRACTED ARTICLE TEXT
-            # print(text)
-    return flag
+            output = output + text
+    return output

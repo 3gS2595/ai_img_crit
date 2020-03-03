@@ -13,7 +13,7 @@ def getHTML(url):
 
 # Recursive method iterating through
 # VillageVoice.com articles written by Saltz
-def VillageVoiceCrawler(url, cnt, fin):
+def VillageVoiceCrawler(url, cnt, fin, output):
     soup = getHTML(url)
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
 
@@ -21,29 +21,25 @@ def VillageVoiceCrawler(url, cnt, fin):
         for link in tag.find_all('a'):
             cnt = cnt + 1
             url = link.get('href')
-            fin = fin + VillageVoiceExtractor(url)
-            print("fin: {} cnt: {}".format(fin, cnt))
+            output = output + VillageVoiceExtractor(url)
+            print("len: {} cnt: {}".format(len(output), cnt))
 
     # GRABS THE NEXT RESULTS PAGE URL
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) != 0:
-            return VillageVoiceCrawler(t.get('href'), cnt, fin)
+            return VillageVoiceCrawler(t.get('href'), cnt, fin, output)
         else:
-            return cnt
+            return output
 
 
 # using villagevoice.com URL extracts article text
 def VillageVoiceExtractor(url):
-    flag = 0
+    out = ""
     article = getHTML(url)
     for rawText in article.find_all("p"):
         text = rawText.get_text()
         if len(text) != 0 and not ('More:' in text) and not ('jsaltz@villagevoice.com' in text):
-            if flag == 0:
-                flag = 1
-
             # EXTRACTED ARTICLE TEXT
-            # print(text)
-
-    return flag
+            out = out + text
+    return out
 

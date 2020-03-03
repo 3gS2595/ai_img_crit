@@ -12,7 +12,9 @@ def getHTML(url):
 
 
 # finds all artnet.com Saltz articles URL
-def ArtNetCrawler(url0, cnt, fin):
+def ArtNetCrawler(url0, cnt):
+    output = ""
+    print(url0)
     soup = getHTML(url0)
     for tag in soup.find_all("div", class_="text"):
 
@@ -22,13 +24,13 @@ def ArtNetCrawler(url0, cnt, fin):
             url = link.get('href')
 
             # SENDS URL TO EXTRACTOR
-            fin = fin + ArtNetExtractor(url)
-            print("fin: {} cnt: {}".format(fin, cnt, ))
-
+            output = output + ArtNetExtractor(url)
+            print("len: {} cnt: {}".format(len(output), cnt))
+    return output
 
 # using artnet.com URL extracts article text
 def ArtNetExtractor(url):
-    flag = 0
+    out = ""
     article = getHTML(url)
     for text in article.find_all("p"):
         text = text.get_text()
@@ -36,10 +38,7 @@ def ArtNetExtractor(url):
                                    or 'daily newsletter' in text
                                    or 'Artnet Worldwide' in text
                                    or 'subscribing!' in text):
-            if flag == 0:
-                flag = 1
-
             # EXTRACTED ARTICLE TEXT
-            # print(text)
-    return flag
+            out = out + text
+    return out
 
