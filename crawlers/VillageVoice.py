@@ -36,14 +36,14 @@ def VillageVoiceCrawler(url, cnt, fin):
 def VillageVoiceExtractor(url):
     flag = 0
     article = getHTML(url)
-    # GRABS TEXT OF A SINGLE ARTICLE
     for rawText in article.find_all("p"):
         text = rawText.get_text()
         if len(text) != 0 and not ('More:' in text) and not ('jsaltz@villagevoice.com' in text):
             if flag == 0:
                 flag = 1
+
             # EXTRACTED ARTICLE TEXT
-            print(text)
+            # print(text)
 
     return flag
 

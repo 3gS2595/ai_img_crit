@@ -4,7 +4,7 @@ from urllib.request import Request, urlopen
 
 # Returns URL's HTML
 def getHTML(url):
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request(('http://www.artnet.com' + url), headers={'User-Agent': 'Mozilla/5.0'})
     web_byte = urlopen(req).read()
     rawhtml = web_byte.decode("latin-1")
     soup = BeautifulSoup(rawhtml, 'html.parser')
@@ -23,14 +23,13 @@ def ArtNetCrawler(url0, cnt, fin):
 
             # SENDS URL TO EXTRACTOR
             fin = fin + ArtNetExtractor(url)
-            print("{}\nfin: {} cnt: {}\n\n ".format(url, fin, cnt, ))
+            print("fin: {} cnt: {}".format(fin, cnt, ))
 
 
 # using artnet.com URL extracts article text
 def ArtNetExtractor(url):
-    # GRABS TEXT OF A SINGLE ARTICLE
     flag = 0
-    article = getHTML('http://www.artnet.com' + url)
+    article = getHTML(url)
     for text in article.find_all("p"):
         text = text.get_text()
         if len(text) != 0 and not ('JERRY SALTZ is' in text
