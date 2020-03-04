@@ -1,28 +1,30 @@
 from crawlers.NyMag import NyMagCrawler
 from crawlers.ArtNet import ArtNetCrawler
 from crawlers.VillageVoice import VillageVoiceCrawler
+from operator import itemgetter
+
+
+def top(dic):
+    high = 0
+    for k, v in sorted(dic.items(), key=itemgetter(1)):
+        if v > high:
+            high = v
+    for k, v in sorted(dic.items(), key=itemgetter(1)):
+        if v >= (high - 30):
+            print(v, k)
+
 
 # found urls
-numURL = 0
-# successfully scraped
-numFIN = 0
-
-text_file = open("output.txt", "wt")
-output = ""
+dic = {'numURL': 0}
 
 start0 = "/magazineus/authors/saltz.asp"
-output = output + ArtNetCrawler(start0, numURL)
-n = text_file.write(output)
+ArtNetCrawler(start0, dic)
+top(dic)
 
 start0 = "https://www.villagevoice.com/author/jerrysaltz/"
-output = output + VillageVoiceCrawler(start0, numURL, numFIN, "")
-n = text_file.write(output)
+VillageVoiceCrawler(start0, dic)
+top(dic)
 
 start0 = "https://nymag.com/author/jerry-saltz/"
-output = output + NyMagCrawler(start0, numURL, numFIN)
-n = text_file.write(output)
-
-text_file.close()
-
-
-
+NyMagCrawler(start0, dic)
+top(dic)
