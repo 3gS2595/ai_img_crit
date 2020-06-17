@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-from crawlers.tools import nameDict
+from crawlers.tools import nameDict, printOut
 
 
 # finds all artnet.com Saltz articles URL
@@ -18,7 +18,7 @@ def ArtNetCrawler(url0, dic):
             ArtNetExtractor(url, dic)
 
             # PRINTS TOTAL NAMES, ARTICLES PROCESSED
-            print("len: {} cnt: {}".format((len(dic) - 1), dic.get('numURL')))
+            printOut(dic, url)
 
 
 # using artnet.com URL extracts article text

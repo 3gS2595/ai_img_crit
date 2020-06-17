@@ -1,5 +1,46 @@
 import re
 import spacy
+import os
+from crawlers.imageGrab import grab
+
+
+# PRINTS MOST COMMON NAMES
+def top(dic):
+    high = 5
+    path = "./TOPNAMES"
+    f = open(path, "w+")
+    for k, v in sorted(dic.items()):
+        if isinstance(v, list):
+            if v[0] >= high and k is not 'numURL':
+                print(v[0], k)
+                f.write(v[0], k, "\n")
+    print()
+
+    for k, v in sorted(dic.items()):
+        if isinstance(v, list):
+            if v[0] >= high and k is not 'numURL':
+                print(v[0], k)
+                # creates folder for artists images and sentences
+                name = k.split(" ")
+                if not os.path.exists('./data/' + name[0] + name[1]):
+                    os.mkdir('./data/' + name[0] + name[1])
+
+                # places in images
+                grab(name[0], name[1])
+
+                # creates/writes too text file for sentences
+                print('creating text file containing sentences')
+                path = "./data/" + name[0] + name[1]
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                f = open(path + "/sentences.txt", "w+")
+                for i in dic[k]:
+                    if isinstance(i, str):
+                        f.write(i + "\n")
+                print('sentence wrtitten for: ' + name[0] + ' ' + name[1])
+                print()
+        else:
+            print(v)
 
 
 # PARSES AND EXTRACTS SENTENCES WITH NAMES
@@ -17,14 +58,18 @@ def nameDict(dic, out):
                     if len(name.split()) >= 2:
                         if name in dic:
                             num = dic.get(name)
-                            dic[name] = num + 1
+                            if sent not in num:
+                                num[0] = num[0] + 1
+                                num.append(sent)
+                                dic[name] = num
                         else:
-                            dic[name] = 1
-                    else:
-                        for key in dic.keys():
-                            if name in key:
-                                num = dic[key]
-                                dic[key] = num + 1
+                            array = [1, sent]
+                            dic[name] = array
+
+
+def printOut(dic, url):
+    print("peopleCnt: {} articleCnt: {}".format((len(dic) - 1), dic.get('numURL')))
+    print(url)
 
 
 def split_into_sentences(text):

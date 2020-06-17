@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-from crawlers.tools import nameDict
+from crawlers.tools import nameDict, printOut
 
 
 # finds all artnet.com Saltz articles URL
@@ -23,7 +23,7 @@ def NyMagCrawler(url0, dic):
                 NyMagExtractor('https://' + url, dic)
 
                 # PRINTS TOTAL NAMES, ARTICLES PROCESSED
-                print("len: {} cnt: {}".format((len(dic) - 1), dic.get('numURL')))
+                printOut(dic, url)
             # SENDS URL TO EXTRACTOR
 
 

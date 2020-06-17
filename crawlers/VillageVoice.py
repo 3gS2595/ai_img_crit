@@ -1,17 +1,6 @@
-from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-
-
-# Returns URL's HTML
-from crawlers.tools import nameDict
-
-
-def getHTML(url):
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    web_byte = urlopen(req).read()
-    rawhtml = web_byte.decode("utf-8")
-    soup = BeautifulSoup(rawhtml, 'html.parser')
-    return soup
+from crawlers.tools import nameDict, printOut
+from bs4 import BeautifulSoup
 
 
 # Recursive method iterating through
@@ -22,19 +11,17 @@ def VillageVoiceCrawler(url, dic):
 
         # ITERATES THROUGH ARTICLES ON RESULTS PAGE
         for link in tag.find_all('a'):
+            printOut(dic, url)
             dic['numURL'] = dic.get('numURL') + 1
-
             # SENDS URL TO EXTRACTOR
             url = link.get('href')
-            VillageVoiceExtractor(url, dic)
-
-            # PRINTS TOTAL NAMES, ARTICLES PROCESSED
-            print("len: {} cnt: {}".format((len(dic) - 1), dic.get('numURL')))
+            if 'jerrysaltz/page/' not in url:
+                VillageVoiceExtractor(url, dic)
 
     # GRABS THE NEXT RESULTS PAGE URL
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) != 0:
-            return VillageVoiceCrawler(t.get('href'), dict)
+            return VillageVoiceCrawler(t.get('href'), dic)
         else:
             return
 
@@ -51,4 +38,9 @@ def VillageVoiceExtractor(url, dic):
     nameDict(dic, out)
 
 
-
+def getHTML(url):
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    web_byte = urlopen(req).read()
+    rawhtml = web_byte.decode("utf-8")
+    soup = BeautifulSoup(rawhtml, 'html.parser')
+    return soup
