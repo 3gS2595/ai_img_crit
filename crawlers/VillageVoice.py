@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 # Recursive method iterating through
 # VillageVoice.com articles written by Saltz
+
 def VillageVoiceCrawler(url, dic):
     soup = getHTML(url)
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):

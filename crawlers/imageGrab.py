@@ -66,7 +66,7 @@ def download_google_staticimages(searchurl, dirs):
     for image in images:
         if cn < maxcount:
             try:
-                url = image['data-src']
+                url = image['data1-src']
                 if not url.find('https://'):
                     urls.append(url)
                     cn = cn + 1
@@ -104,7 +104,7 @@ def grab(first, last):
     word2 = last
     searchurl = 'https://www.google.com/search?q=' + 'art+done+by+' + word1 + '+' + word2 + '&source=lnms&tbm=isch'
 
-    dirs = 'data/' + first + last
+    dirs = 'data1/' + first + last
     if not os.path.exists(dirs):
         os.mkdir(dirs)
 

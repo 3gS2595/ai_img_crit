@@ -1,19 +1,20 @@
 import re
 import spacy
 import os
+import json
 from crawlers.imageGrab import grab
 
 
 # PRINTS MOST COMMON NAMES
 def top(dic):
-    high = 5
-    path = "./TOPNAMES"
+    high = 3
+    path = "./TOPNAMES.txt"
     f = open(path, "w+")
     for k, v in sorted(dic.items()):
         if isinstance(v, list):
             if v[0] >= high and k is not 'numURL':
-                print(v[0], k)
-                f.write(v[0], k, "\n")
+                print("{} ".format(v[0]) + k)
+                f.write("{}".format(v[0]) + " " + k + "\n")
     print()
 
     for k, v in sorted(dic.items()):
@@ -22,15 +23,15 @@ def top(dic):
                 print(v[0], k)
                 # creates folder for artists images and sentences
                 name = k.split(" ")
-                if not os.path.exists('./data/' + name[0] + name[1]):
-                    os.mkdir('./data/' + name[0] + name[1])
+                if not os.path.exists('./data1/' + name[0] + name[1]):
+                    os.mkdir('./data1/' + name[0] + name[1])
 
                 # places in images
                 grab(name[0], name[1])
 
                 # creates/writes too text file for sentences
                 print('creating text file containing sentences')
-                path = "./data/" + name[0] + name[1]
+                path = "./data1/" + name[0] + name[1]
                 if not os.path.exists(path):
                     os.mkdir(path)
                 f = open(path + "/sentences.txt", "w+")
@@ -72,6 +73,25 @@ def printOut(dic, url):
     print(url)
 
 
+def is_json(myjson):
+  try:
+    json_object = json.loads(myjson)
+  except ValueError as e:
+    return False
+  return True
+
+
+def format_bytes(size):
+    # 2**10 = 1024
+    power = 2**10
+    n = 0
+    power_labels = {0 : '', 1: 'kilo', 2: 'mega', 3: 'giga', 4: 'tera'}
+    while size > power:
+        size /= power
+        n += 1
+    return size, power_labels[n]+'bytes'
+
+
 def split_into_sentences(text):
     alphabets = "([A-Za-z])"
     prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
@@ -104,3 +124,4 @@ def split_into_sentences(text):
     sentences = sentences[:-1]
     sentences = [s.strip() for s in sentences]
     return sentences
+

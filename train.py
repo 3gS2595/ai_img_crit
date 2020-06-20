@@ -3,17 +3,16 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import torchvision.transforms as transforms
-import torch
-from models import Encoder, DecoderWithAttention
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
+from keras.models import Encoder, DecoderWithAttention
 from datasets import *
 from utils import *
 from nltk.translate.bleu_score import corpus_bleu
 
 # Data parameters
-data_folder = '/media/ssd/caption data'  # folder with data files saved by create_input_files.py
-data_name = 'coco_5_cap_per_img_5_min_word_freq'  # base name shared by data files
+data_folder = '/media/ssd/caption data1'  # folder with data1 files saved by create_input_files.py
+data_name = 'coco_5_cap_per_img_5_min_word_freq'  # base name shared by data1 files
 
 # Model parameters
 emb_dim = 512  # dimension of word embeddings
@@ -28,7 +27,7 @@ start_epoch = 0
 epochs = 120  # number of epochs to train for (if early stopping is not triggered)
 epochs_since_improvement = 0  # keeps track of number of epochs since there's been an improvement in validation BLEU
 batch_size = 32
-workers = 1  # for data-loading; right now, only 1 works with h5py
+workers = 1  # for data1-loading; right now, only 1 works with h5py
 encoder_lr = 1e-4  # learning rate for encoder if fine-tuning
 decoder_lr = 4e-4  # learning rate for decoder
 grad_clip = 5.  # clip gradients at an absolute value of
@@ -139,8 +138,7 @@ def main():
 def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_optimizer, epoch):
     """
     Performs one epoch's training.
-
-    :param train_loader: DataLoader for training data
+    :param train_loader: DataLoader for training data1
     :param encoder: encoder model
     :param decoder: decoder model
     :param criterion: loss layer
@@ -153,7 +151,7 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
     encoder.train()
 
     batch_time = AverageMeter()  # forward prop. + back prop. time
-    data_time = AverageMeter()  # data loading time
+    data_time = AverageMeter()  # data1 loading time
     losses = AverageMeter()  # loss (per word decoded)
     top5accs = AverageMeter()  # top5 accuracy
 
@@ -226,8 +224,7 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
 def validate(val_loader, encoder, decoder, criterion):
     """
     Performs one epoch's validation.
-
-    :param val_loader: DataLoader for validation data.
+    :param val_loader: DataLoader for validation data1.
     :param encoder: encoder model
     :param decoder: decoder model
     :param criterion: loss layer
