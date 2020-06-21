@@ -35,9 +35,9 @@ def generateJSON():
             # place data in dic which will become the JSON
             if f != 'sentences.txt' and len(sent) > 10:
                 split = 'train'
-                if imgID >= 4409:
+                if imgID >= 320:
                     split = 'val'
-                if imgID >= 4888:
+                if imgID >= 379:
                     split = 'test'
                 src_dir = root + "/" + f
                 dst_dir = "/home/clem/PycharmProjects/TheSaltzWaltz/training_data/{}/{}.jpg".format(split, imgID)
@@ -75,6 +75,7 @@ def generateJSON():
                 sentID = c
                 imgID = imgID + 1
                 json_data['images'].append(img)
+                print(imgID)
 
     # writes/dumps to the json file
     print('-----------------------------------------------')
