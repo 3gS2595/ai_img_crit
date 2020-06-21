@@ -1,65 +1,87 @@
+import shutil
+
+from crawlers.tools import format_bytes, is_json
 import os
+import json
 
 
 def generateJSON():
-    json = "{\"images\": ["
-    folder = ""
+    json_data = {'images': []}
     images = []
     sent = []
     sentID = 0
     imgID = 0
 
-    rootdir = '/home/clem/PycharmProjects/TheSaltzWaltz/crawlers/data'
-    for dirs in os.walk(rootdir):
-        for file in dirs:
-            for f in file:
-                # finds sentences
-                if f == 'sentences.txt':
-                    sent = []
-                    with open(folder + "/" + f) as file:
-                        for l in file:
-                            sent.append(l.strip())
-                else:
-                    # finds image file names
-                    if f.find('.') is not -1:
-                        images.append(f)
+    print('creating JSON')
+    rootDir = '/home/clem/PycharmProjects/TheSaltzWaltz/data'
 
-                    else:
-                        # finds artist/folder name
-                        if len(f) > 1:
-                            folder = rootdir + "/" + f
-        print(len(sent))
-        print('hit')
-        if len(images) > 1:
-            for i in images:
-                json = json + "{\"filepath\": \"" + folder + ", "
+    # iterates through the ./data directory
+    for root, dirs, files in os.walk(rootDir):
+        dirs.sort()
+        print(root)
+        for f in files:
+            # scans the file directory and gathers data for JSON
+            # finds sentences
+            if f == 'sentences.txt':
+                sent = []
+                with open(root + "/" + f) as file:
+                    for l in file:
+                        sent.append(l.strip())
+            # finds images
+            else:
+                # finds image file names
+                if f.find('.') is not -1:
+                    images.append(f)
+            # place data in dic which will become the JSON
+            if f != 'sentences.txt' and len(sent) > 10:
+                split = 'train'
+                if imgID >= 4409:
+                    split = 'val'
+                if imgID >= 4888:
+                    split = 'test'
+                src_dir = root + "/" + f
+                dst_dir = "/home/clem/PycharmProjects/TheSaltzWaltz/training_data/{}/{}.jpg".format(split, imgID)
+                shutil.copy(src_dir, dst_dir)
+                # adds general information
+                img = {}
+                img['imgid'] = imgID
+                img['filename'] = "{}.jpg".format(imgID)
+                img['filepath'] = "/home/clem/PycharmProjects/TheSaltzWaltz/training_data/{}/".format(split)
+                img['split'] = split
 
-                c = 0
-                json = json + "\"sentids\": ["
+                # adds sentence information
+                img['sentids'] = []
+                img['sentences'] = []
+                c = sentID
+                limit = 0
                 for s in sent:
-                    json = json + "{}".format(sentID + c) + ", "
-                    c = c + 1
-                json = json[:-2] + "], "
+                    if(limit < 2):
+                        # creates single sentences data
+                        tokens = []
+                        for w in s.split(" "):
+                            tokens.append(w)
+                        sentGroup = {}
+                        sentGroup['tokens'] = tokens
+                        sentGroup['raw'] = s
+                        sentGroup['imgid'] = imgID
+                        sentGroup['sentid'] = c
 
-                json = json + "\"filename\": \"" + i + "\", "
-
-                json = json + "\"imgid\": " + "{}".format(imgID) + ", "
-
-                c = 0
-                json = json + "\"sentences\": ["
-                for s in sent:
-                    json = json + "{\"tokens\": ["
-                    for w in s.split(" "):
-                        json = json + "\"" + w + "\", "
-                    json = json[:-2] + "], \"raw\": \"" + s + "\", "
-                    json = json + "\"imgid\": " + "{}".format(imgID) + ", "
-                    json = json + "\"sentid\": " + "{}".format(sentID + c) + "}], "
-                    c = c + 1
-
-                json = json + "\"split\": \"train\"}, "
-
+                        # places sentence in images group
+                        img['sentids'].append(c)
+                        img['sentences'].append(sentGroup)
+                        # print('append {} {} ID:{}'.format(f, root, c))
+                        c = c + 1
+                        limit = limit + 1
+                sentID = c
                 imgID = imgID + 1
-            json = json[:-2] + "]}"
-            path = "./JSON"
-            f = open(path, "w+")
-            f.write(json)
+                json_data['images'].append(img)
+
+    # writes/dumps to the json file
+    print('-----------------------------------------------')
+    print('JSON validity: {}'.format(is_json(json.dumps(json_data))))
+    print('writing to file')
+    path = "./output/JSON.json"
+    with open(path, 'w') as fp:
+        json.dump(json_data, fp)
+    print('JSON created ({})'.format(format_bytes(os.path.getsize('./output/JSON.json'))))
+    print('-----------------------------------------------')
