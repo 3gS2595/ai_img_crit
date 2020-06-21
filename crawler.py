@@ -4,7 +4,7 @@ from crawlers.VillageVoice import VillageVoiceCrawler
 from crawlers.tools import top
 from generateJSON import generateJSON
 
-# txt = input("crawl? (y or n) : ")
+# txt = input("fresh-crawl? (y or n) : ")
 txt = 'n'
 
 if txt == 'y':

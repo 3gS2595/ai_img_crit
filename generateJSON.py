@@ -1,3 +1,5 @@
+import shutil
+
 from crawlers.tools import format_bytes, is_json
 import os
 import json
@@ -11,7 +13,7 @@ def generateJSON():
     imgID = 0
 
     print('creating JSON')
-    rootDir = './data'
+    rootDir = '/home/clem/PycharmProjects/TheSaltzWaltz/data'
 
     # iterates through the ./data directory
     for root, dirs, files in os.walk(rootDir):
@@ -30,37 +32,46 @@ def generateJSON():
                 # finds image file names
                 if f.find('.') is not -1:
                     images.append(f)
-
             # place data in dic which will become the JSON
             if f != 'sentences.txt' and len(sent) > 10:
-
+                split = 'train'
+                if imgID >= 4409:
+                    split = 'val'
+                if imgID >= 4888:
+                    split = 'test'
+                src_dir = root + "/" + f
+                dst_dir = "/home/clem/PycharmProjects/TheSaltzWaltz/training_data/{}/{}.jpg".format(split, imgID)
+                shutil.copy(src_dir, dst_dir)
                 # adds general information
                 img = {}
                 img['imgid'] = imgID
-                img['filename'] = f
-                img['filepath'] = root
-                img['split'] = "train"
+                img['filename'] = "{}.jpg".format(imgID)
+                img['filepath'] = "/home/clem/PycharmProjects/TheSaltzWaltz/training_data/{}/".format(split)
+                img['split'] = split
 
                 # adds sentence information
                 img['sentids'] = []
                 img['sentences'] = []
                 c = sentID
+                limit = 0
                 for s in sent:
-                    # creates single sentences data
-                    tokens = []
-                    for w in s.split(" "):
-                        tokens.append(w)
-                    sentGroup = {}
-                    sentGroup['tokens'] = tokens
-                    sentGroup['raw'] = s
-                    sentGroup['imgid'] = imgID
-                    sentGroup['sentid'] = c
+                    if(limit < 2):
+                        # creates single sentences data
+                        tokens = []
+                        for w in s.split(" "):
+                            tokens.append(w)
+                        sentGroup = {}
+                        sentGroup['tokens'] = tokens
+                        sentGroup['raw'] = s
+                        sentGroup['imgid'] = imgID
+                        sentGroup['sentid'] = c
 
-                    # places sentence in images group
-                    img['sentids'].append(c)
-                    img['sentences'].append(sentGroup)
-                    # print('append {} {} ID:{}'.format(f, root, c))
-                    c = c + 1
+                        # places sentence in images group
+                        img['sentids'].append(c)
+                        img['sentences'].append(sentGroup)
+                        # print('append {} {} ID:{}'.format(f, root, c))
+                        c = c + 1
+                        limit = limit + 1
                 sentID = c
                 imgID = imgID + 1
                 json_data['images'].append(img)
@@ -69,8 +80,8 @@ def generateJSON():
     print('-----------------------------------------------')
     print('JSON validity: {}'.format(is_json(json.dumps(json_data))))
     print('writing to file')
-    path = "./JSON.json"
+    path = "./output/JSON.json"
     with open(path, 'w') as fp:
         json.dump(json_data, fp)
-    print('JSON created ({})'.format(format_bytes(os.path.getsize('./JSON.json'))))
+    print('JSON created ({})'.format(format_bytes(os.path.getsize('./output/JSON.json'))))
     print('-----------------------------------------------')

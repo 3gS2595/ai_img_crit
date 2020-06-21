@@ -8,7 +8,7 @@ from crawlers.imageGrab import grab
 # PRINTS MOST COMMON NAMES
 def top(dic):
     high = 3
-    path = "./TOPNAMES.txt"
+    path = "./output/TOP_NAMES.txt"
     f = open(path, "w+")
     for k, v in sorted(dic.items()):
         if isinstance(v, list):

@@ -5,14 +5,14 @@ import torch.utils.data
 import torchvision.transforms as transforms
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
-from keras.models import Encoder, DecoderWithAttention
+from models import Encoder, DecoderWithAttention
 from datasets import *
 from utils import *
 from nltk.translate.bleu_score import corpus_bleu
 
 # Data parameters
-data_folder = '/media/ssd/caption data1'  # folder with data1 files saved by create_input_files.py
-data_name = 'coco_5_cap_per_img_5_min_word_freq'  # base name shared by data1 files
+data_folder = './output'  # folder with data files saved by create_input_files.py
+data_name = 'coco_5_cap_per_img_2_min_word_freq'  # base name shared by data files
 
 # Model parameters
 emb_dim = 512  # dimension of word embeddings
@@ -26,14 +26,14 @@ cudnn.benchmark = True  # set to true only if inputs to model are fixed size; ot
 start_epoch = 0
 epochs = 120  # number of epochs to train for (if early stopping is not triggered)
 epochs_since_improvement = 0  # keeps track of number of epochs since there's been an improvement in validation BLEU
-batch_size = 32
-workers = 1  # for data1-loading; right now, only 1 works with h5py
+batch_size = 16
+workers = 1  # for data-loading; right now, only 1 works with h5py
 encoder_lr = 1e-4  # learning rate for encoder if fine-tuning
 decoder_lr = 4e-4  # learning rate for decoder
 grad_clip = 5.  # clip gradients at an absolute value of
 alpha_c = 1.  # regularization parameter for 'doubly stochastic attention', as in the paper
 best_bleu4 = 0.  # BLEU-4 score right now
-print_freq = 100  # print training/validation stats every __ batches
+print_freq = 1  # print training/validation stats every __ batches
 fine_tune_encoder = False  # fine-tune encoder?
 checkpoint = None  # path to checkpoint, None if none
 
@@ -138,7 +138,8 @@ def main():
 def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_optimizer, epoch):
     """
     Performs one epoch's training.
-    :param train_loader: DataLoader for training data1
+
+    :param train_loader: DataLoader for training data
     :param encoder: encoder model
     :param decoder: decoder model
     :param criterion: loss layer
@@ -151,10 +152,11 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
     encoder.train()
 
     batch_time = AverageMeter()  # forward prop. + back prop. time
-    data_time = AverageMeter()  # data1 loading time
+    data_time = AverageMeter()  # data loading time
     losses = AverageMeter()  # loss (per word decoded)
     top5accs = AverageMeter()  # top5 accuracy
 
+    print('start')
     start = time.time()
 
     # Batches
@@ -175,8 +177,8 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
 
         # Remove timesteps that we didn't decode at, or are pads
         # pack_padded_sequence is an easy trick to do this
-        scores, _ = pack_padded_sequence(scores, decode_lengths, batch_first=True)
-        targets, _ = pack_padded_sequence(targets, decode_lengths, batch_first=True)
+        scores = pack_padded_sequence(scores, decode_lengths, batch_first=True).data
+        targets = pack_padded_sequence(targets, decode_lengths, batch_first=True).data
 
         # Calculate loss
         loss = criterion(scores, targets)
@@ -224,7 +226,8 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
 def validate(val_loader, encoder, decoder, criterion):
     """
     Performs one epoch's validation.
-    :param val_loader: DataLoader for validation data1.
+
+    :param val_loader: DataLoader for validation data.
     :param encoder: encoder model
     :param decoder: decoder model
     :param criterion: loss layer
