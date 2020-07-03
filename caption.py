@@ -197,7 +197,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load model
-    checkpoint = torch.load(args.model, map_location=str(device))
+    checkpoint = torch.load('/home/clem/PycharmProjects/TheSaltzWaltz/BEST_checkpoint_coco_5_cap_per_img_3_min_word_freq.pth.tar', map_location=str(device))
     decoder = checkpoint['decoder']
     decoder = decoder.to(device)
     decoder.eval()

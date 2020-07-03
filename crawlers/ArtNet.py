@@ -4,13 +4,14 @@ from crawlers.tools import nameDict, printOut
 
 
 # finds all artnet.com Saltz articles URL
-def ArtNetCrawler(url0, dic):
-    print(url0)
+def ArtNetCrawler(url0, dic, limit):
     soup = getHTML(url0)
     for tag in soup.find_all("div", class_="text"):
 
         # ITERATES THROUGH ARTICLES ON RESULTS PAGE
         for link in tag.find_all('a'):
+            if dic.get('numURL') >= limit:
+                return
             dic['numURL'] = dic.get('numURL') + 1
 
             # SENDS URL TO EXTRACTOR
@@ -18,7 +19,7 @@ def ArtNetCrawler(url0, dic):
             ArtNetExtractor(url, dic)
 
             # PRINTS TOTAL NAMES, ARTICLES PROCESSED
-            printOut(dic, url)
+            printOut(dic, 'http://www.artnet.com'+url)
 
 
 # using artnet.com URL extracts article text
@@ -37,7 +38,7 @@ def ArtNetExtractor(url, dic):
 
     # PARSES AND EXTRACTS SENTENCES WITH NAMES
     # PLACES IN DICT (KEY=NAME, VALUE=COUNTER)
-    nameDict(dic, out)
+    dic['articles'].append(out)
 
 
 # Returns URL's HTML
