@@ -5,20 +5,20 @@ import os
 import json
 
 
-def generateJSON():
+def generateJSON(limit):
     json_data = {'images': []}
     images = []
     sent = []
     sentID = 0
     imgID = 0
 
+    print('------------------------------')
     print('creating JSON')
-    rootDir = '/home/clem/PycharmProjects/TheSaltzWaltz/data'
+    rootDir = '/home/clem/PycharmProjects/TheSaltzWaltz/crawlers/data'
 
     # iterates through the ./data directory
     for root, dirs, files in os.walk(rootDir):
         dirs.sort()
-        print(root)
         for f in files:
             # scans the file directory and gathers data for JSON
             # finds sentences
@@ -33,7 +33,7 @@ def generateJSON():
                 if f.find('.') is not -1:
                     images.append(f)
             # place data in dic which will become the JSON
-            if f != 'sentences.txt' and len(sent) > 10:
+            if f != 'sentences.txt' and len(sent) > limit:
                 split = 'train'
                 if imgID >= 320:
                     split = 'val'
@@ -53,9 +53,9 @@ def generateJSON():
                 img['sentids'] = []
                 img['sentences'] = []
                 c = sentID
-                limit = 0
+                limits = 0
                 for s in sent:
-                    if(limit < 2):
+                    if(limits < limit):
                         # creates single sentences data
                         tokens = []
                         for w in s.split(" "):
@@ -71,18 +71,16 @@ def generateJSON():
                         img['sentences'].append(sentGroup)
                         # print('append {} {} ID:{}'.format(f, root, c))
                         c = c + 1
-                        limit = limit + 1
+                        limits = limits + 1
                 sentID = c
                 imgID = imgID + 1
                 json_data['images'].append(img)
-                print(imgID)
 
     # writes/dumps to the json file
-    print('-----------------------------------------------')
     print('JSON validity: {}'.format(is_json(json.dumps(json_data))))
     print('writing to file')
     path = "./output/JSON.json"
     with open(path, 'w') as fp:
         json.dump(json_data, fp)
     print('JSON created ({})'.format(format_bytes(os.path.getsize('./output/JSON.json'))))
-    print('-----------------------------------------------')
+

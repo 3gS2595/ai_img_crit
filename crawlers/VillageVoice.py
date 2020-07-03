@@ -6,12 +6,14 @@ from bs4 import BeautifulSoup
 # Recursive method iterating through
 # VillageVoice.com articles written by Saltz
 
-def VillageVoiceCrawler(url, dic):
+def VillageVoiceCrawler(url, dic, limit):
     soup = getHTML(url)
     for tag in soup.find_all("div", class_="c-postList__post__title c-postList__post__title__wo_dek"):
 
         # ITERATES THROUGH ARTICLES ON RESULTS PAGE
         for link in tag.find_all('a'):
+            if dic.get('numURL') >= limit:
+                return
             printOut(dic, url)
             dic['numURL'] = dic.get('numURL') + 1
             # SENDS URL TO EXTRACTOR
@@ -22,7 +24,7 @@ def VillageVoiceCrawler(url, dic):
     # GRABS THE NEXT RESULTS PAGE URL
     for t in soup.find_all("a", class_="next page-numbers"):
         if len(t) != 0:
-            return VillageVoiceCrawler(t.get('href'), dic)
+            return VillageVoiceCrawler(t.get('href'), dic, limit)
         else:
             return
 
@@ -36,7 +38,7 @@ def VillageVoiceExtractor(url, dic):
         if len(text) != 0 and not ('More:' in text) and not ('jsaltz@villagevoice.com' in text):
             # EXTRACTED ARTICLE TEXT
             out = out + text
-    nameDict(dic, out)
+    dic['articles'].append(out)
 
 
 def getHTML(url):
