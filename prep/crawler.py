@@ -4,8 +4,8 @@ from prep.crawlers.NyMag import NyMagCrawler
 from prep.crawlers.ArtNet import ArtNetCrawler
 from prep.crawlers.VillageVoice import VillageVoiceCrawler
 from prep.crawlers.tools import analysis, saveArticles
-from prep.generateJSON import generateJSON
 from prep.crawlers.imageGrab import grab
+from prep.generateJSON import generateJSON
 
 
 # ARTICLE COUNTER
