@@ -1,5 +1,5 @@
 from urllib.request import Request, urlopen
-from crawlers.tools import nameDict, printOut
+from prep.crawlers.tools import nameDict, printOut
 from bs4 import BeautifulSoup
 
 
@@ -42,7 +42,7 @@ def VillageVoiceExtractor(url, dic):
 
 
 def getHTML(url):
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'})
     web_byte = urlopen(req).read()
     rawhtml = web_byte.decode("utf-8")
     soup = BeautifulSoup(rawhtml, 'html.parser')

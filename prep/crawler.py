@@ -1,11 +1,11 @@
 import sys
 
-from preperation.crawlers.NyMag import NyMagCrawler
-from preperation.crawlers.ArtNet import ArtNetCrawler
-from preperation.crawlers.VillageVoice import VillageVoiceCrawler
-from preperation.crawlers.tools import analysis, saveArticles
-from preperation.generateJSON import generateJSON
-from preperation.crawlers.imageGrab import grab
+from prep.crawlers.NyMag import NyMagCrawler
+from prep.crawlers.ArtNet import ArtNetCrawler
+from prep.crawlers.VillageVoice import VillageVoiceCrawler
+from prep.crawlers.tools import analysis, saveArticles
+from prep.generateJSON import generateJSON
+from prep.crawlers.imageGrab import grab
 
 
 # ARTICLE COUNTER

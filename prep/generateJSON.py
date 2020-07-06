@@ -1,6 +1,6 @@
 import shutil
 
-from preperation.crawlers.tools import format_bytes, is_json
+from prep.crawlers.tools import format_bytes, is_json
 import os
 import json
 

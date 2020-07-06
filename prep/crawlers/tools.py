@@ -4,8 +4,6 @@ import os
 import json
 import time
 from tqdm import tqdm
-from crawlers.imageGrab import grab
-
 
 # FINDS / STORES MOST COMMON NAMES
 def analysis(dic, limit):
@@ -113,11 +111,6 @@ def createDataDirectories(dic, limit):
     t1 = time.time()
     total_time = (t1 - t0) / 60
     print(f'directories created in {str(round(total_time, 5))} minutes.')
-
-
-def imageGrab():
-    print()
-    # TODO MAKE IMAGE GRAB OPERATE BASED ON TOP_NAMES.txt
 
 
 # WRITES EVERY ARTICLE FOUND BY CRAWLERS
