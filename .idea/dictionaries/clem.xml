@@ -2,12 +2,14 @@
   <dictionary name="clem">
     <words>
       <w>artnet</w>
+      <w>filepath</w>
       <w>logits</w>
       <w>nextpage</w>
       <w>pytorch</w>
       <w>rawhtml</w>
       <w>rootdir</w>
       <w>saltz</w>
+      <w>searchurl</w>
       <w>villagevoice</w>
     </words>
   </dictionary>
