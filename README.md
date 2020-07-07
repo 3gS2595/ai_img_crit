@@ -1,1 +1,2 @@
-Jerry Saltz WIP AI
+Early stage Jerry Saltz AI
+
