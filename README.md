@@ -1,2 +1,2 @@
-Early stage Jerry Saltz AI
+early stage Jerry Saltz AI
 
